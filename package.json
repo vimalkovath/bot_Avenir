@@ -1,0 +1,32 @@
+{
+  "name": "avenir",
+  "version": "1.0.0",
+  "description": "chatbot for rentel house find",
+  "main": "index.js",
+  "dependencies": {
+     "express": "^4.x.x",
+    "body-parser": "^1.x.x",
+    "request": "2.56.x"
+  
+     },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vimalkovath/bot_Avenir.git"
+  },
+  "keywords": [
+    "chatbot",
+    "messager",
+    "bot"
+  ],
+  "author": "vimalkovath , gokul",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vimalkovath/bot_Avenir/issues"
+  },
+  "homepage": "https://github.com/vimalkovath/bot_Avenir#readme"
+}
