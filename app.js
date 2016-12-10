@@ -28,6 +28,9 @@ app.get('/webhook/', function (req, res) {
     res.send('Error, wrong token')
 });
 
+
+
+
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
@@ -35,15 +38,18 @@ app.post('/webhook/', function (req, res) {
         let sender = event.sender.id
         if (event.message && event.message.text) {
             let text = event.message.text
-              if (text === 'Hello') {
-            sendGenericMessage(sender)
-            continue
-        }
+            if (text === 'Generic') {
+                sendGenericMessage(sender)
+                continue
+            }
             sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
         }
     }
     res.sendStatus(200)
-});
+})
+
+
+
 
 function sendGenericMessage(sender) {
     let messageData = {
@@ -93,8 +99,6 @@ function sendGenericMessage(sender) {
         }
     })
 }
-
-
 
 app.post('/hello', function (req, res, next) {
   var userName = req.body.user_name;
