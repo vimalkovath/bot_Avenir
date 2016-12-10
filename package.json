@@ -2,7 +2,7 @@
   "name": "avenir",
   "version": "1.0.0",
   "description": "chatbot for rentel house find",
-  "main": "index.js",
+  "main": "app.js",
   "dependencies": {
      "express": "^4.x.x",
     "body-parser": "^1.x.x",
