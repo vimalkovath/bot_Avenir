@@ -13,10 +13,14 @@ app.get('/', function (req, res) { res.status(200).send('Hello world!'); });
 app.listen(port, function () {
   console.log('Listening on port ' + port);
 });
-const token = "EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD"
+//const token = "EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD"
 //EAAXSZCE0KtWsBAMDLRZAZA7ymZBNRK9VvGZAPpJ3mM1DDYT8vsoz2ERo0kHfQmdJgZA1WaRH8mxDTJtnqr76v3mT13y6KoeSdK9h0Uvh5mNZAcNsh4hCBlmGn0fdmswi3bbug79TCfygJ7z6hb8gzMF75BX7xziS7wucLzZANdCwzwZDZD
 //EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD
 // for Facebook verification
+//heroku config:set FB_PAGE_ACCESS_TOKEN=EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD
+
+const token = process.env.FB_PAGE_ACCESS_TOKEN
+
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
         res.send(req.query['hub.challenge'])
