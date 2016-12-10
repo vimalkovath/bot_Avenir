@@ -3,10 +3,19 @@ var bodyParser = require('body-parser');
  
 var app = express();
 var port = process.env.PORT || 1337;
- 
+
+
+
+
+
 // body parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
- 
+
+// Process application/json
+app.use(bodyParser.json())
+
+
+
 // test route
 app.get('/', function (req, res) { res.status(200).send('Hello world!'); });
  
@@ -27,6 +36,8 @@ app.get('/webhook/', function (req, res) {
     }
     res.send('Error, wrong token')
 });
+
+
 
 
 
