@@ -13,8 +13,9 @@ app.get('/', function (req, res) { res.status(200).send('Hello world!'); });
 app.listen(port, function () {
   console.log('Listening on port ' + port);
 });
-const token = "EAAXSZCE0KtWsBAMDLRZAZA7ymZBNRK9VvGZAPpJ3mM1DDYT8vsoz2ERo0kHfQmdJgZA1WaRH8mxDTJtnqr76v3mT13y6KoeSdK9h0Uvh5mNZAcNsh4hCBlmGn0fdmswi3bbug79TCfygJ7z6hb8gzMF75BX7xziS7wucLzZANdCwzwZDZD"
+const token = "EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD"
 //EAAXSZCE0KtWsBAMDLRZAZA7ymZBNRK9VvGZAPpJ3mM1DDYT8vsoz2ERo0kHfQmdJgZA1WaRH8mxDTJtnqr76v3mT13y6KoeSdK9h0Uvh5mNZAcNsh4hCBlmGn0fdmswi3bbug79TCfygJ7z6hb8gzMF75BX7xziS7wucLzZANdCwzwZDZD
+//EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD
 // for Facebook verification
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
@@ -40,10 +41,38 @@ app.post('/webhook/', function (req, res) {
     res.sendStatus(200)
 });
 
-
-
-function sendTextMessage(sender, text) {
-    let messageData = { text:text }
+function sendGenericMessage(sender) {
+    let messageData = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [{
+                    "title": "First card",
+                    "subtitle": "Element #1 of an hscroll",
+                    "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+                    "buttons": [{
+                        "type": "web_url",
+                        "url": "https://www.messenger.com",
+                        "title": "web url"
+                    }, {
+                        "type": "postback",
+                        "title": "Postback",
+                        "payload": "Payload for first element in a generic bubble",
+                    }],
+                }, {
+                    "title": "Second card",
+                    "subtitle": "Element #2 of an hscroll",
+                    "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+                    "buttons": [{
+                        "type": "postback",
+                        "title": "Postback",
+                        "payload": "Payload for second element in a generic bubble",
+                    }],
+                }]
+            }
+        }
+    }
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
@@ -60,6 +89,7 @@ function sendTextMessage(sender, text) {
         }
     })
 }
+
 
 
 app.post('/hello', function (req, res, next) {
