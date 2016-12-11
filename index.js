@@ -1,125 +1,193 @@
-var express = require('express');
-var bodyParser = require('body-parser');
- 
-var app = express();
-var port = process.env.PORT || 1337;
+'use strict'
 
+const express = require('express')
+const bodyParser = require('body-parser')
+const request = require('request')
+const app = express()
 
+app.set('port', (process.env.PORT || 5000))
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: false}))
 
-
-// body parser middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Process application/json
+// parse application/json
 app.use(bodyParser.json())
 
-    
-
-// test route
-app.get('/', function (req, res) { res.status(200).send('Hello world!'); });
- 
-app.listen(port, function () {
-  console.log('Listening on port ' + port);
-});
-//const token = "EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD"
-//EAAXSZCE0KtWsBAMDLRZAZA7ymZBNRK9VvGZAPpJ3mM1DDYT8vsoz2ERo0kHfQmdJgZA1WaRH8mxDTJtnqr76v3mT13y6KoeSdK9h0Uvh5mNZAcNsh4hCBlmGn0fdmswi3bbug79TCfygJ7z6hb8gzMF75BX7xziS7wucLzZANdCwzwZDZD
-//EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD
-// for Facebook verification
-//heroku config:set FB_PAGE_ACCESS_TOKEN=EAAXSZCE0KtWsBANSxd34SUFZAGSlSUpRP7NjkHCRItFX8Jprd7i5H1GZB145QiDSyidTfS5HZC0eWVmli1WrslS2aZCQ369QYVZAygh2QZBhOcvEuqJUFGKq1Wn53mVyQmZAQCJ4e9k35s8KmUqQlXWQuMMnxZBmieYrfzRvtTwkqNwZDZD
-
-const token = process.env.FB_PAGE_ACCESS_TOKEN
-
-app.get('/webhook/', function (req, res) {
-    if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
-        res.send(req.query['hub.challenge'])
-    }
-    res.send('Error, wrong token')
-});
-
-
-
-
-
-
-app.post('/webhook/', function (req, res) {
-    let messaging_events = req.body.entry[0].messaging
-    for (let i = 0; i < messaging_events.length; i++) {
-        let event = req.body.entry[0].messaging[i]
-        let sender = event.sender.id
-        if (event.message && event.message.text) {
-            let text = event.message.text
-            if (text === 'Generic') {
-                sendGenericMessage(sender)
-                continue
-            }
-            sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
-        }
-    }
-    res.sendStatus(200)
+// index
+app.get('/', function (req, res) {
+	res.send('hello world i am a secret bot')
 })
 
+// for facebook verification
+app.get('/webhook/', function (req, res) {
+	if (req.query['hub.verify_token'] === 'my_voice_is_my_password_verify_me') {
+		res.send(req.query['hub.challenge'])
+	}
+	res.send('Error, wrong token')
+})
 
+// to post data
+app.post('/webhook/', function (req, res) {
+	let messaging_events = req.body.entry[0].messaging
+	for (let i = 0; i < messaging_events.length; i++) {
+		let event = req.body.entry[0].messaging[i]
+		let sender = event.sender.id
+		if (event.message && event.message.text) {
+			let text = event.message.text
+			if (text === 'Generic') {
+				sendGenericMessage(sender)
+				continue
+			}
+			if (text === 'Generic') {
+				sendGenericMessage(sender)
+				continue
+			}
+			sendTextMessage(sender, "Text received, echo: " + text.substring(0, 200))
+		}
+		if (event.postback) {
+			let text = JSON.stringify(event.postback)
+	
+	sendTextMessageA(sender, "cool!!! Based on your current location we recommended few places here! ", token)
+		sendGenericMessage(sender)
+		
+		//sendGenericHomeMessage(sender)
+//	sendTextMessageB(sender, "cool based on your current location we recommended few place near to your location ",text, token)
+			continue
+				
+		}
 
+	}
+	res.sendStatus(200)
+})
 
-function sendGenericMessage(sender) {
-    let messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "title": "First card",
-                    "subtitle": "Element #1 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-                    "buttons": [{
-                        "type": "web_url",
-                        "url": "https://www.messenger.com",
-                        "title": "web url"
-                    }, {
-                        "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for first element in a generic bubble",
-                    }],
-                }, {
-                    "title": "Second card",
-                    "subtitle": "Element #2 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-                    "buttons": [{
-                        "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for second element in a generic bubble",
-                    }],
-                }]
-            }
-        }
-    }
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
+//heroku config:set FB_PAGE_ACCESS_TOKEN=EAAaR3YFqStUBAGkbrURhmj7UZCNzOZATNT7FboByCfFPHaotrPBnZCvszmcZBJrZBrnZAWssbidbwVXIhbWYZClIZBBXL5jMXRFLhgMYwvvjW9tfmZBFbeY4syKyuruEpczojEUtCAdAcGokNtx7pcstYfv1ZAZC51Ol924x4ZCnqmWTYgZDZD
+// recommended to inject access tokens as environmental variables, e.g.
+// const token = process.env.PAGE_ACCESS_TOKEN
+const token = "EAAaR3YFqStUBAGkbrURhmj7UZCNzOZATNT7FboByCfFPHaotrPBnZCvszmcZBJrZBrnZAWssbidbwVXIhbWYZClIZBBXL5jMXRFLhgMYwvvjW9tfmZBFbeY4syKyuruEpczojEUtCAdAcGokNtx7pcstYfv1ZAZC51Ol924x4ZCnqmWTYgZDZD"
+
+function sendTextMessage(sender, text) {
+	let messageData = { text:text }
+	
+	request({
+		url: 'https://graph.facebook.com/v2.6/me/messages',
+		qs: {access_token:token},
+		method: 'POST',
+		json: {
+			recipient: {id:sender},
+			message: messageData,
+		}
+	}, function(error, response, body) {
+		if (error) {
+			console.log('Error sending messages: ', error)
+		} else if (response.body.error) {
+			console.log('Error: ', response.body.error)
+		}
+	})
 }
 
-app.post('/hello', function (req, res, next) {
-  var userName = req.body.user_name;
-  var botPayload = {
-    text : 'Hello ' + userName + ', welcome to Devdactic Slack channel! I\'ll be your guide.'
-  };
-  // Loop otherwise..
-  if (userName !== 'slackbot') {
-    return res.status(200).json(botPayload);
-  } else {
-    return res.status(200).end();
-  }
-});
+
+
+function sendTextMessageA(sender, text) {
+	let messageData = { text:text }
+	
+	request({
+		url: 'https://graph.facebook.com/v2.6/me/messages',
+		qs: {access_token:token},
+		method: 'POST',
+		json: {
+			recipient: {id:sender},
+			message: messageData,
+		}
+	}, function(error, response, body) {
+		if (error) {
+			console.log('Error sending messages: ', error)
+		} else if (response.body.error) {
+			console.log('Error: ', response.body.error)
+		}
+	})
+}
+
+
+function sendTextMessageB(sender, text,from) {
+	let messageData = { text:from.payload }
+	
+	request({
+		url: 'https://graph.facebook.com/v2.6/me/messages',
+		qs: {access_token:token},
+		method: 'POST',
+		json: {
+			recipient: {id:sender},
+			message: messageData,
+		}
+	}, function(error, response, body) {
+		if (error) {
+			console.log('Error sending messages: ', error)
+		} else if (response.body.error) {
+			console.log('Error: ', response.body.error)
+		}
+	})
+}
+
+function sendGenericHomeMessage(sender) {
+}
+
+function sendGenericMessage(sender) {
+	let messageData = {
+		"attachment": {
+			"type": "template",
+			"payload": {
+				"template_type": "generic",
+				"elements": [{
+					"title": "Seller",
+					"subtitle": "click below to sell your property",
+					"image_url": "http://kaytons.co.uk/wp-content/uploads/2016/05/sell-you-house-fast.jpg",
+					"buttons": [
+					// 	{
+					// 	"type": "web_url",
+					// 	"url": "https://www.messenger.com",
+					// 	"title": "web url"
+					// },
+					 {
+						"type": "postback",
+						"title": "Postback",
+						"payload": "based on your current location we recommended few place near to your location",
+					}],
+				}, {
+					"title": "To buy",
+					"subtitle": "Click here to buy your dream property",
+					"image_url": "http://excasa.com/wp-content/uploads/2015/03/House-In-Cart-1-1024x768.png",
+					"buttons": [{
+						"type": "postback",
+						"title": "toBuy",
+						"payload": "based on your current location we recommended few place near to your location",
+					}],
+				}]
+			}
+		}
+	}
+	request({
+		url: 'https://graph.facebook.com/v2.6/me/messages',
+		qs: {access_token:token},
+		method: 'POST',
+		json: {
+			recipient: {id:sender},
+			message: messageData,
+		}
+	}, function(error, response, body) {
+		if (error) {
+			console.log('Error sending messages: ', error)
+		} else if (response.body.error) {
+			console.log('Error: ', response.body.error)
+		}
+	})
+}
+
+
+
+
+
+
+// spin spin sugar
+app.listen(app.get('port'), function() {
+	console.log('running on port', app.get('port'))
+})
